@@ -1,0 +1,82 @@
+/* GLOBAL STYLES
+-------------------------------------------------- */
+/* Padding below the footer and lighter body text */
+
+body {
+  padding-bottom: 40px;
+  color: #5a5a5a;
+}
+
+
+.expando{
+	padding: 0 .5em 0 .5em;
+	color: #666666;
+	border: 1px solid #dbdbdb;
+	border-bottom: 2px solid #dbdbdb;
+	margin-bottom: .6em;
+	position: relative;
+}
+
+.expando .sectionHeader{
+	font-size: 1.3em;
+	cursor: pointer;
+	font-weight: bolder;
+	line-height: 2em;
+}
+
+.expando .sectionIndicator {
+	font-size: 1.3em;
+}
+
+.expando.open{
+	color:#333;
+}
+.expando.open .sectionIndicator{
+	color:#666666;
+}
+.expando.open .sectionHeader:hover .sectionIndicator{
+	color: #d35400;
+}
+.expando.collapsed:hover{
+	color:#333;
+	background-color: #efefef;
+}
+.expando .inside{
+	margin-bottom: 1em;
+}
+.expando .option{
+	padding-right: .6em;
+}
+.expando .option label{
+	font-size: 1em;
+	font-weight: 400;
+}
+
+/* Featurettes
+------------------------- */
+
+.featurette-divider {
+  margin: 80px 0; /* Space out the Bootstrap <hr> more */
+}
+
+/* Thin out the marketing headings */
+.featurette-heading {
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+
+
+/* RESPONSIVE CSS
+-------------------------------------------------- */
+
+@media (min-width: 768px) {
+
+
+
+  .featurette-heading {
+    font-size: 50px;
+  }
+
+}

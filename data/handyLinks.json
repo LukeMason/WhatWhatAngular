@@ -1,0 +1,11 @@
+[
+ {"title":"AngularJS Wiki","href":"https://github.com/angular/angular.js/wiki"},
+        {"title":"AngularJS directives and the computer science of JavaScript","href":"http://www.adobe.com/devnet/html5/articles/angularjs-directives-and-the-computer-science-of-javascript.html"},
+        {"title":"Lots of good examples on this blog","href":"http://blog.brunoscopelliti.com/"},
+        {"title":"Got scope issues? Read this. ","href":"http://stackoverflow.com/questions/14049480/what-are-the-nuances-of-scope-prototypal-prototypical-inheritance-in-angularjs/14049482#14049482"},
+        {"title":"A fiddle with angular already in it.","href":"http://jsfiddle.net/joshdmiller/HB7LU/"},
+    {"title":"Batarang", "href" : "https://chrome.google.com/webstore/detail/angularjs-batarang/ighdmehidhipcmcojjgiloacoafjmpfk?hl=en"},
+        {"title":"Cheat Sheet", "href" : "http://www.cheatography.com/proloser/cheat-sheets/angularjs/"}
+
+
+    ]

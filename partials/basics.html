@@ -1,0 +1,116 @@
+<h1>How to speak Angular</h1>
+
+<h3> Controllers and Scope </h3>
+<p> Controllers are simply JS functions bound to a particular Scope. They are used to house the logic of your views. Basically these are the glue that bind the Model (data) and View </p>
+<h4>Scope</h4>
+<p>
+Scope is nothing but an object that Glues the View with Controller. They hold all Model data that we need to pass to view. Scope uses Angular’s two-way data binding to bind model data to view. </p><p>
+Imaging $scope as an object that links Controller to the View. It is the controller's responsibility to initialize the data that each view needs to display.</p>
+<pre ng-non-bindable>
+<h5>JavaScript</h5>
+/*
+NOTE: Although Angular allows you to create Controller functions in the global scope, this is not recommended. In a real application you should use the .controller method
+*/
+
+angular.module('myApp.controllers', []).
+  controller('HeaderController', ['$scope','$location', 
+    function($scope,$location) {
+
+     //A simple function that updates our underlying model with the view location. 
+     $scope.isActive = function (viewLocation) { 
+        return viewLocation === $location.path();
+    }; 
+
+  }])
+  .controller('secondController', [function() {
+    //Note that these are chain-able, just add all of your controllers this way.
+  }]);
+</pre>
+<h4> Ng-Controller </h4>
+<p>
+  This attribute defines a Controller to be bound with the view. In this case we defined a controller called HeaderController on the navbar DIV using an ng-controller attribute. Thus whatever we put inside that DIV, will have access to the HeaderController scope. 
+</p>
+<pre ng-non-bindable>
+<h5>HTML</h5>
+&lt;div class=&quot;navbar&quot;  ng-controller=&quot;HeaderController&quot; &gt;
+    &lt;div class=&quot;navbar-header&quot;&gt;
+        &lt;a class=&quot;navbar-brand&quot; href=&quot;#&quot;&gt;My App&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+        &lt;ul id=&quot;topNav&quot; class=&quot;nav navbar-nav&quot;&gt;
+            &lt;li ng-class=&quot;{ active: isActive('/home')}&quot; &gt;&lt;a href=&quot;#/home&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
+            &lt;li ng-class=&quot;{ active: isActive('/view1')}&quot; &gt;&lt;a href=&quot;#/view1&quot;&gt;View 1&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</pre>
+<h3> Routing </h3>
+<p>
+Routing helps you in dividing your application in logical views and bind different views to specific Controllers. The magic of Routing is taken care by a service that Angular provides out of the box called $routeProvider.<sup><a href="http://viralpatel.net/blogs/angularjs-routing-and-views-tutorial-with-example/" target="_blank">[1]</a></sup>  </p>
+</p>
+<pre ng-non-bindable>
+<h5>JavaScript</h5>
+angular.module('myApp', []).config(['$routeProvider', function($routeProvider) {
+  $routeProvider.when('/basics', {
+      templateUrl: 'partials/basics.html', 
+      controller: 'MyCtrl1'
+  });
+  $routeProvider.when('/home', {
+      templateUrl: 'partials/home.html', 
+      controller: 'HomeCtrl'
+  });
+  $routeProvider.otherwise({
+      redirectTo: '/home'
+  });
+}]);
+</pre>
+    <p>Read this exelent tutorial if you want more detail <a href="http://viralpatel.net/blogs/angularjs-routing-and-views-tutorial-with-example/" target="_blank">AngularJS Routing And Views</a>
+
+<h3> Directives </h3>
+<p>Directives are my personal favorite feautre of angular, if you've ever wished you could teach your browser new tricks, now you can! At a high level, directives are markers on a DOM element (such as an attribute, element name, or CSS class) that tell AngularJS's HTML compiler ($compile) to attach a specified behavior to that DOM element, or even transform the DOM element and its children.
+
+</p>
+<h4>Matching Directives</h4>
+<p>Angular normalizes an element's tag and attribute name to determine which elements match which directives. We typically refer to directives by their case-sensitive camelCase normalized name (e.g. ngModel). However, since HTML is case-insensitive, we refer to directives in the DOM by lower-case forms, typically using dash-delimited attributes on DOM elements (e.g. ng-model).<sup><a href="http://docs.angularjs.org/guide/directive" target="_blank">[2]</a></sup> </p>
+<p> Here is a simple fiddle that shows how a directive can be used </p>
+<iframe width="100%" height="300" src="http://jsfiddle.net/LukeMaso/T8CF2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<h3>Service, Provider, and Factory </h3>
+<p>In fact $provide.provider, $provide.factory and $provide.service are 
+more or less the same thing in the sense that all of them are 
+blueprints / instructions for creating object instances (those 
+instances are then ready to be injected into collaborators). 
+</p><p>
+$provide.provider is the most sophisticated method of registering 
+blueprints, it allows you to have a complex creation function and 
+configuration options. 
+</p><p>
+$provide.factory is a simplified version of $provide.provider when you 
+don't need to support configuration options but still want to have a 
+more sophisticated creation logic. 
+</p><p>
+$provide.service is for cases where the whole creation logic boils 
+down to invoking a constructor function. 
+</p><p>
+So, depending on the complexity of your construction logic you would 
+choose one of $provide.provider, $provide.factory and $provide.service 
+but in the end what you are going to get is a new instance. 
+<sup><a href="https://groups.google.com/forum/#!topic/angular/hVrkvaHGOfc" target="_blank">[3]</a></sup></p><p>
+Here is the jsFiddle showing different ways of constructing objects: 
+</p><p>
+<iframe width="100%" height="300" src="http://jsfiddle.net/pkozlowski_opensource/PxdSP/14/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+</p><p>
+The angular documentation is quite okay regarding this topic: 
+<a href="http://docs.angularjs.org/api/AUTO.$provide" target="_blank">http://docs.angularjs.org/api/AUTO.$provide</a> </p>
+
+<h3> Dependency Injection </h3>
+<p>
+AngularJS has a built-in dependency injection subsystem that helps the developer by making the application easier to develop, understand, and test. </p>
+<p>
+Dependency Injection (DI) allows you to ask for your dependencies, rather than having to go look for them or make them yourself. Think of it as a way of saying "Hey I need X", and the DI is responsible for creating and providing it for you. </p>
+<p>
+To gain access to core AngularJS services, it is simply a matter of adding that service as a parameter; AngularJS will detect that you need that service and provide an instance for you.
+</p>
+<p> Here is a simple fiddle that shows how DI works. </p>
+
+<iframe width="100%" height="300" src="http://jsfiddle.net/LukeMaso/4ZdH9/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>

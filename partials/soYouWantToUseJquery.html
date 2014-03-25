@@ -1,0 +1,66 @@
+<h1>So you want to use jQuery?</h1>
+<p> You may have noticed that angular doesn't need jQuery to function, if angular present when the app is bootstrapped angular will make use of it, if not Angular falls back to a built in implementation called <a href="http://docs.angularjs.org/api/angular.element" target="_blank"> jQlite </a>. Further, a lot of the way Angular is structured is very different from how you would interact with an application using jQuery.</p>
+<p> Remember one of the fundamental concepts behind angular is that <i> "the only place where an application touches the DOM is within directives. This is good as artifacts that access the DOM are hard to test. If you need to access the DOM directly you should write a custom directive for this." </i><sup><a href="http://docs.angularjs.org/guide/concepts#view" target="_blank">[1]</a></sup> as such, the chances of you needing to use jQuery outside of a directive are very slim, and if you find yourself doing this you should carefully consider if there is another way.</p>
+<h3>Should I be using jQuery?</h3>
+<ul>
+    <li>
+        <h4>Don't design your page, and then change it with DOM manipulations</h4>
+        <p>In jQuery, you design a page, and then you make it dynamic. But in AngularJS, you must start from the ground up with your architecture in mind. Instead of starting by thinking "I have this piece of the DOM and I want to make it do X", you have to start with what you want to accomplish, then go about designing your application, and then finally go about designing your view. </p>
+    </li>
+    <li>
+        <h4>Don't augment jQuery with AngularJS</h4>
+        <p>Similarly, don't start with the idea that jQuery does X, Y, and Z, so I'll just add AngularJS on top of that for models and controllers.</p>
+    </li>
+    <li>
+    <h4> Directives are not packaged jQuery </h4>
+    <p>
+        You'll often hear "only do DOM manipulation in a directive". <b>This is a necessity</b>. </p>
+        <p>
+    Some directives just decorate what's already in the view (think ngClass) and therefore sometimes do DOM manipulation straight away and then are basically done. But if a directive is like a "widget" and has a template, it should also respect separation of concerns. That is, the template too should remain largely independent from its implementation in the link and controller functions.
+    </p>
+        <p>
+AngularJS comes with an entire set of tools to make this very easy; with ngClass we can dynamically update the class; ngBind allows two-way data binding; ngShow and ngHide programmatically show or hide an element; and many more - including the ones we write ourselves. In other words, we can do all kinds of awesomeness without DOM manipulation. The less DOM manipulation, the easier directives are to test, the easier they are to style, the easier they are to change in the future, and the more re-usable and distributable they are.
+    </p>
+    <p>Think of the logger we programmed in section 3. Even if we put that in a directive, we still want to do it the "Angular Way". It still doesn't take any DOM manipulation! There are lots of times when DOM manipulation is necessary, but it's a lot rarer than you think! Before doing DOM manipulation anywhere in your application, ask yourself if you really need to. There might be a better way.</p>
+        <p>So if directives aren't just collections of jQuery-like functions, what are they? Directives are actually <b>extensions of HTML</b>. If HTML doesn't do something you need it to do, you write a directive to do it for you, and then use it just as if it was part of HTML.
+<p>Don't even use jQuery. Don't even include it. It will hold you back. And when you come to a problem that you think you know how to solve in jQuery already, before you reach for the $, try to think about how to do it within the confines the AngularJS. If you don't know, ask! 19 times out of 20, the best way to do it doesn't need jQuery and to try to solve it with jQuery results in more work for you.<sup><a href="http://stackoverflow.com/a/15012542" target="_blank">[2]</a></p>
+    </li>
+</ul></sup></p>
+
+<p>Assuming you have thought about doing everything the angular way, and have decided that you absolutely need to wrap some sort of jQuery into a directive it should probably look something like this. </p>
+
+<p>Here is an example implementation of the <a href="http://premiumsoftware.net/cleditor/" target="_blank">CLEditor</a>  jQuery plugin</p>
+<pre ng-non-bindable> 
+  // This is for a rich text editor, simply make it an attribute of a div or textarea
+    angular.module('myApp.directives').directive('clEditor', function() {
+        return {
+            restrict: 'A', //This will restrict the binding to only attribute and not class or element.
+            require: '?ngModel', //this will check that there is a model bound to the element and throw an error if not.
+            link: function(scope, elm, attr, ngModel) {
+                var cl = null;
+                    cl = elm.cleditor(); //create a new cleditor this is the equivalent of $("#input").cleditor();
+                if (!ngModel) {
+                    return; //if we don't have a model we are done, nothing to bind to.
+                }
+                // map the model to the contents of the editor.
+                //if the editor updates then we should tell angular to update the underlying model.
+                cl[0].change(function() {
+                    var v = this.$area.context.value;
+                    ngModel.$setViewValue(v);
+                });
+                //this is called if angular's model changes external to the editor (uploaded doc, rest response, etc.) 
+                ngModel.$render = function(value) {
+                    cl[0].$area.val(ngModel.$viewValue);
+                    cl[0].updateFrame();
+                };
+            }
+        };
+    });
+</pre>
+<p>That can then be attached to the DOM node as an attribute.</p>
+<pre>
+&lt;textarea name=&quot;description&quot; cl-editor rows=&quot;20&quot; cols=&quot;500&quot; ng-model=&quot;currentJob.targetForm.description&quot;&gt;&lt;/textarea&gt;
+</pre>
+
+<p>As you can see, even though we are using a jQuery plugin we are actually still doing things the 'angular' way.</p>
+

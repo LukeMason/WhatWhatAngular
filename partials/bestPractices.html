@@ -1,0 +1,26 @@
+<h1> Best Practices </h1>
+
+<ul>
+    <li>
+    <p>Namespace distributed code. The ng- is reserved for core directives, pick a namespace that makes sense for you're project and scope.</p>
+</li>
+<li>
+    <p>Extend directives by using Directive Controllers. </p>
+    <iframe width="100%" height="300" src="http://jsfiddle.net/LukeMaso/LwFws/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+</li>
+<li>
+    <p>Leverage modules. Break you code into related modules so you can add and remove functionality without breaking the whole app.</p>
+</li>
+</ul>
+
+<h3> Do this Not that </h3>
+<ul>
+<li> 
+    <p>Don't use the global function version of controllers. By default angular won't complain but when you minify your code everything will stop working. </p>
+    <iframe width="100%" height="300" src="http://jsfiddle.net/LukeMaso/QZ5Gg/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+</li>
+<li> 
+    <p>Don't do $(this). If you are needing a jQuery wrapped version of the element you're probably doing something wrong. (see the jquery page for more) </p>
+    <iframe width="100%" height="300" src="http://jsfiddle.net/LukeMaso/pq4tK/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+</li>
+</ul>

@@ -1,0 +1,97 @@
+<h1>More Awesome Stuff!</h1>
+
+<h3> $resource </h3>
+<p> At some point you're probably going to want to interact with a back end service. Angular provides us with $resource as a starting point for this. $resource is really nothing more than a factory which creates a 'resource' objects that lets you interact with RESTful server-side data. At it's core it is a high-level wrapper around angular's low level $http service.</p>
+
+<h4>Basic Usage</h4>
+<p>First create a simple service that we will use in our controller</p>
+<pre ng-non-bindable>
+angular.module('myApp.services', ['ngResource']).factory('linksService', function($resource) {
+  return $resource('data/handyLinks.json', { },
+      {
+          'getData': {method:'GET', isArray: true}
+      });
+});
+</pre>
+<p>then inject the service and use it to update the scope.</p>
+<pre ng-non-bindable>
+  .controller('RescCtrl', ['$scope', 'linksService' ,function($scope,linksService) {
+      //Use Resource to get links from JSON file
+      $scope.links = linksService.getData(function(resp) {
+        }, function(err) {
+            //handle error
+        });
+  }])
+</pre>
+<p>Now the results are available to be used in the view</p>
+<pre ng-non-bindable>
+&lt;h1&gt;Handy resources, examples, etc.&lt;/h1&gt; 
+    &lt;ul&gt; 
+        &lt;li ng-repeat=&quot;link in links&quot;&gt; 
+            &lt;a ng-href=&quot;{{link.href}}&quot;&gt;{{link.title}}&lt;/a&gt;
+        &lt;/li&gt; 
+    &lt;/ul&gt;
+</pre>
+<h4>A bit more complex</h4>
+<p> this is how a simple job resource might look and be used. </p>
+<pre ng-non-bindable>
+angular.module('pajApp').factory('jobResource', function($resource) {
+    return $resource('/jobs/app/paj/jobsvc/:action/:param1/:param2',
+    {
+        action: '@action',
+        id: '@id'
+    },
+    {
+        get : {
+            method : 'GET',
+            params: {action:'viewJob'}
+        },
+        newJob : {
+            method : 'GET',
+            params: {action:'newJob'}
+        },
+        create: {
+            method: 'POST',
+            params: {action:'addJob'}
+        },
+        update : {
+            method : 'POST',
+            params: {action:'updateJob'}
+        }
+    });
+});
+
+</pre>
+<p> Which can be injected and used as such</p>
+<pre ng-non-bindable>
+angular.module('pajApp').controller('jobPajController', function($scope, $log, $routeParams, jobResource) {
+
+    //If there is an ID in the route get that job 
+   if ($routeParams.id) {
+        $scope.currentJob = jobResource.get({
+            param1: $routeParams.id
+        }, function(resp) {
+           
+        }, function(err) {
+            $log.error(err);
+        });
+    } 
+    // otherwise create a new job based on the print and days.
+    else {
+        $scope.pageParts.saveDraftText = 'Save a draft';
+        $scope.currentJob = jobResource.newJob({
+            param1: $routeParams.print,
+            param2: $routeParams.days
+        }, function(resp) {
+
+        }, function(err) {
+            $log.error(err);
+        });
+    }
+});
+</pre>
+
+<h3>Transclusion</h3>
+<p>Angular has built in the idea of 'transclusion' which is a fancy way of saying wrap the code inside in it's own scope and include it. Transcluded scopes are a bit complex, read about them  <a href="http://stackoverflow.com/a/16705183" target="_blank">here</a></p>
+
+<iframe width="100%" height="300" src="http://jsfiddle.net/LukeMaso/GVjDm/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
